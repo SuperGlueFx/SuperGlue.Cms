@@ -1,0 +1,11 @@
+﻿type file
+id Jajo.Cms
+version 1.0
+authors Mattias Jakobsson
+description
+        Jajo Cms
+files
+    bin/Release/Jajo.Cms.dll ==> lib
+dependencies
+	MarkdownSharp
+	Newtonsoft.Json

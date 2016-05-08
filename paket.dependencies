@@ -1,0 +1,5 @@
+source https://nuget.org/api/v2
+nuget Fixie
+nuget MarkdownSharp
+nuget NewtonSoft.Json
+nuget Should

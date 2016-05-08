@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{E2169D2B-3902-4EEC-8362-C95C76987C8C}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\build.cake = ..\build.cake
+		..\build.ps1 = ..\build.ps1
+		..\paket.dependencies = ..\paket.dependencies
+		..\paket.lock = ..\paket.lock
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Cms", "SuperGlue.Cms\SuperGlue.Cms.csproj", "{19FCA30F-586D-4354-8DD6-A0ACAD57809E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Cms.Tests", "SuperGlue.Cms.Tests\SuperGlue.Cms.Tests.csproj", "{73B8047C-83A4-4D86-94B0-AA4566D2F577}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19FCA30F-586D-4354-8DD6-A0ACAD57809E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19FCA30F-586D-4354-8DD6-A0ACAD57809E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19FCA30F-586D-4354-8DD6-A0ACAD57809E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19FCA30F-586D-4354-8DD6-A0ACAD57809E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73B8047C-83A4-4D86-94B0-AA4566D2F577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73B8047C-83A4-4D86-94B0-AA4566D2F577}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73B8047C-83A4-4D86-94B0-AA4566D2F577}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73B8047C-83A4-4D86-94B0-AA4566D2F577}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
