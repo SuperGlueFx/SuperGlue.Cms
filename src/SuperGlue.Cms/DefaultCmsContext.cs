@@ -8,23 +8,11 @@ namespace SuperGlue.Cms
     public class DefaultCmsContext : ICmsContext
     {
         private readonly IDictionary<Guid, RequestContext> _currentContexts = new Dictionary<Guid, RequestContext>();
-        private readonly Func<Type, object> _resolve;
         private readonly IFeatureValidator _featureValidator;
 
-        public DefaultCmsContext(Func<Type, object> resolve, IFeatureValidator featureValidator)
+        public DefaultCmsContext(IFeatureValidator featureValidator)
         {
-            _resolve = resolve;
             _featureValidator = featureValidator;
-        }
-
-        public object Resolve(Type serviceType)
-        {
-            return _resolve(serviceType);
-        }
-
-        public TService Resolve<TService>()
-        {
-            return (TService)_resolve(typeof(TService));
         }
 
         public IEnumerable<RequestContext> FindCurrentContexts()
@@ -54,20 +42,22 @@ namespace SuperGlue.Cms
             return FindCurrentContexts().Where(x => x.Name == name && filter(x));
         }
 
-        public void EnterContext(Guid id, RequestContext context)
-        {
-            _currentContexts[id] = context;
-        }
-
-        public void ExitContext(Guid id)
-        {
-            if (_currentContexts.ContainsKey(id))
-                _currentContexts.Remove(id);
-        }
-
         public bool HasContext(string name)
         {
             return _currentContexts.Any(x => x.Value.Name == name);
+        }
+
+        public IDisposable EnterContexts(params RequestContext[] contexts)
+        {
+            var contextDictionary = contexts.ToDictionary(x => Guid.NewGuid(), x => x);
+            foreach (var context in contextDictionary)
+                EnterContext(context.Key, context.Value);
+
+            return new ContextManager(() =>
+            {
+                foreach (var context in contextDictionary)
+                    ExitContext(context.Key);
+            });
         }
 
         public IEnumerable<TInput> Filter<TInput>(IEnumerable<TInput> input)
@@ -92,6 +82,32 @@ namespace SuperGlue.Cms
             var requireContexts = input as IRequireContexts;
 
             return requireContexts == null || requireContexts.GetRequiredContexts().All(HasContext);
+        }
+
+        private void EnterContext(Guid id, RequestContext context)
+        {
+            _currentContexts[id] = context;
+        }
+
+        private void ExitContext(Guid id)
+        {
+            if (_currentContexts.ContainsKey(id))
+                _currentContexts.Remove(id);
+        }
+
+        public class ContextManager : IDisposable
+        {
+            private readonly Action _done;
+
+            public ContextManager(Action done)
+            {
+                _done = done;
+            }
+
+            public void Dispose()
+            {
+                _done();
+            }
         }
     }
 }

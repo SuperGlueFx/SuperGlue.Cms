@@ -49,9 +49,7 @@
     <Compile Include="Localization\LocalizationTextParser.cs" />
     <Compile Include="Localization\IFindCurrentLocalizationNamespace.cs" />
     <Compile Include="Localization\ILocalizeText.cs" />
-    <Compile Include="Rendering\JsonRenderInformation.cs" />
     <Compile Include="Rendering\ParseTextOptions.cs" />
-    <Compile Include="Rendering\RenderJsonRenderInformation.cs" />
     <Compile Include="RequestContext.cs" />
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="ISupplyContext.cs" />
@@ -90,19 +88,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\DefaultCmsRenderer.cs" />
     <Compile Include="Rendering\ICmsRenderer.cs" />
-    <Compile Include="Rendering\IRenderInformation.cs" />
     <Compile Include="IRequireContexts.cs" />
-    <Compile Include="Rendering\IRenderResult.cs" />
-    <Compile Include="Rendering\RenderTemplateRenderInformation.cs" />
-    <Compile Include="Rendering\RenderTextRenderInformation.cs" />
-    <Compile Include="Rendering\TemplateRenderInformation.cs" />
-    <Compile Include="Rendering\TextRenderInformation.cs" />
     <Compile Include="Templates\CmsTemplate.cs" />
     <Compile Include="Templates\ITemplateStorage.cs" />
-    <Compile Include="Views\CmsView.cs" />
-    <Compile Include="Views\ICmsViewEngine.cs" />
-    <Compile Include="Views\RenderViewRenderInformation.cs" />
-    <Compile Include="Views\ViewRenderInformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />

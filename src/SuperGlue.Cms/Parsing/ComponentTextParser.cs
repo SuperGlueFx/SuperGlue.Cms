@@ -57,7 +57,7 @@ namespace SuperGlue.Cms.Parsing
 
             var renderResult = cmsRenderer.RenderComponent(component, settings, context);
 
-            return recurse(renderResult.Read());
+            return recurse(renderResult);
         }
 
         protected override IEnumerable<Regex> GetRegexes()
