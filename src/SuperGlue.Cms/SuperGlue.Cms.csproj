@@ -62,14 +62,6 @@
     <Compile Include="Files\MaxWidthTransformationSetting.cs" />
     <Compile Include="Files\UploadFile.cs" />
     <Compile Include="ICmsContext.cs" />
-    <Compile Include="Menu\BreadCrumb.cs" />
-    <Compile Include="Menu\IBuildMenu.cs" />
-    <Compile Include="Menu\IAmBreadCrumb.cs" />
-    <Compile Include="Menu\IBuildMenuTree.cs" />
-    <Compile Include="Menu\IFindBreadCrumbsFor.cs" />
-    <Compile Include="Menu\IMenuContext.cs" />
-    <Compile Include="Menu\Menu.cs" />
-    <Compile Include="Menu\MenuItemSettings.cs" />
     <Compile Include="Parsing\ComponentTextParser.cs" />
     <Compile Include="Parsing\DefaultParameterValueFinder.cs" />
     <Compile Include="Parsing\IFindParameterValueFromModel.cs" />
