@@ -4,4 +4,5 @@ nuget Fixie
 nuget MarkdownSharp
 nuget NewtonSoft.Json
 nuget Should
+nuget SuperGlue.FileSystem
 nuget SuperGlue.Web.Output

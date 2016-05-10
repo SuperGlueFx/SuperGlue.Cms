@@ -9,6 +9,8 @@ NUGET
   specs:
     SuperGlue.Configuration (1.0.0.325)
       Newtonsoft.Json
+    SuperGlue.FileSystem (1.0.0.325)
+      SuperGlue.Configuration
     SuperGlue.Web.Output (1.0.0.325)
       Newtonsoft.Json
       SuperGlue.Configuration

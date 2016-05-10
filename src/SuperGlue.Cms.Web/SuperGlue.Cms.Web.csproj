@@ -61,6 +61,16 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\SuperGlue.Cms\SuperGlue.Cms.csproj">
+      <Project>{19fca30f-586d-4354-8dd6-a0acad57809e}</Project>
+      <Name>SuperGlue.Cms</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
+    <None Include="paket.template" />
+  </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v3.5'">
       <ItemGroup>
@@ -130,15 +140,5 @@
       <Private>True</Private>
       <Paket>True</Paket>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SuperGlue.Cms\SuperGlue.Cms.csproj">
-      <Project>{19fca30f-586d-4354-8dd6-a0acad57809e}</Project>
-      <Name>SuperGlue.Cms</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="paket.references" />
-    <None Include="paket.template" />
   </ItemGroup>
 </Project>

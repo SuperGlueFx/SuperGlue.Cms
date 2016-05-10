@@ -6,12 +6,4 @@ namespace SuperGlue.Cms.Templates
     {
         Task<CmsTemplate> Load(string name);
     }
-
-    public class FileSystemTemplateStorage : ITemplateStorage
-    {
-        public Task<CmsTemplate> Load(string name)
-        {
-            return null;
-        }
-    }
 }

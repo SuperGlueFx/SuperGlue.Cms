@@ -43,13 +43,30 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\EnvironmentExtensions.cs">
+      <Link>EnvironmentExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\ResolveExtensions.cs">
+      <Link>ResolveExtensions.cs</Link>
+    </Compile>
     <Compile Include="Cache.cs" />
+    <Compile Include="Components\ConfigureComponents.cs" />
+    <Compile Include="Files\ConfigureFiles.cs" />
+    <Compile Include="Files\FileSystemFileUploader.cs" />
+    <Compile Include="Localization\ConfigureLocalization.cs" />
+    <Compile Include="Localization\DefaultLocalizationNamespaceFinder.cs" />
+    <Compile Include="Localization\DefaultLocalizer.cs" />
     <Compile Include="Localization\ILocalizationVisitor.cs" />
     <Compile Include="Localization\LocalizationTextParser.cs" />
     <Compile Include="Localization\IFindCurrentLocalizationNamespace.cs" />
     <Compile Include="Localization\ILocalizeText.cs" />
+    <Compile Include="Parsing\ConfigureParsing.cs" />
     <Compile Include="Parsing\RegExExtensions.cs" />
+    <Compile Include="Rendering\ConfigureRendering.cs" />
     <Compile Include="Rendering\ParseTextOptions.cs" />
+    <Compile Include="Templates\ConfigureTemplates.cs" />
+    <Compile Include="Templates\FileSystemTemplatesSettings.cs" />
+    <Compile Include="Templates\FileSystemTemplateStorage.cs" />
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="Components\ICmsComponent.cs" />
     <Compile Include="Files\ITransformFiles.cs" />
@@ -153,4 +170,18 @@
       </ItemGroup>
     </When>
   </Choose>
+  <ItemGroup>
+    <Reference Include="SuperGlue.Configuration">
+      <HintPath>..\..\packages\SuperGlue.Configuration\lib\SuperGlue.Configuration.dll</HintPath>
+      <Private>True</Private>
+      <Paket>True</Paket>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="SuperGlue.FileSystem">
+      <HintPath>..\..\packages\SuperGlue.FileSystem\lib\SuperGlue.FileSystem.dll</HintPath>
+      <Private>True</Private>
+      <Paket>True</Paket>
+    </Reference>
+  </ItemGroup>
 </Project>
