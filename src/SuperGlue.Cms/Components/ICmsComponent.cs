@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Cms.Components
 {
@@ -7,7 +8,7 @@ namespace SuperGlue.Cms.Components
         string Name { get; }
         string Category { get; }
 
-        string Render(IDictionary<string, object> settings);
+        Task<string> Render(IDictionary<string, object> settings);
         IDictionary<string, object> GetDefaultSettings();
     }
 }

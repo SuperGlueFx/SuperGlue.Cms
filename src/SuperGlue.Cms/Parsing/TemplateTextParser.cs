@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SuperGlue.Cms.Rendering;
 using SuperGlue.Cms.Templates;
@@ -16,14 +17,7 @@ namespace SuperGlue.Cms.Parsing
             _templateStorage = templateStorage;
         }
 
-        public override IEnumerable<string> GetTags()
-        {
-            yield return "template";
-            yield return "advanced";
-            yield return "multitarget";
-        }
-
-        protected override object FindParameterValue(Match match, ICmsRenderer cmsRenderer, Func<string, string> recurse)
+        protected override async Task<object> FindParameterValue(Match match, ICmsRenderer cmsRenderer, Func<string, Task<string>> recurse)
         {
             var templateNameGroup = match.Groups["templateName"];
 
@@ -32,7 +26,7 @@ namespace SuperGlue.Cms.Parsing
 
             var templateName = templateNameGroup.Value;
 
-            var template = _templateStorage.Load(templateName);
+            var template = await _templateStorage.Load(templateName).ConfigureAwait(false);
 
             if (template == null)
                 return "";
@@ -41,18 +35,18 @@ namespace SuperGlue.Cms.Parsing
 
             var settingsGroup = match.Groups["settings"];
 
-            if (!string.IsNullOrEmpty(settingsGroup?.Value))
-            {
-                var settingsJson = settingsGroup.Value;
+            if (string.IsNullOrEmpty(settingsGroup?.Value))
+                return cmsRenderer.RenderTemplate(template, settings);
 
-                if (!string.IsNullOrEmpty(settingsJson))
-                {
-                    var parsedSettings = JsonConvert.DeserializeObject<IDictionary<string, object>>(settingsJson);
+            var settingsJson = settingsGroup.Value;
 
-                    foreach (var item in parsedSettings)
-                        settings[item.Key] = item.Value;
-                }
-            }
+            if (string.IsNullOrEmpty(settingsJson))
+                return cmsRenderer.RenderTemplate(template, settings);
+
+            var parsedSettings = JsonConvert.DeserializeObject<IDictionary<string, object>>(settingsJson);
+
+            foreach (var item in parsedSettings)
+                settings[item.Key] = item.Value;
 
             return cmsRenderer.RenderTemplate(template, settings);
         }

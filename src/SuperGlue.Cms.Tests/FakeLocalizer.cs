@@ -1,21 +1,22 @@
 using System.Globalization;
+using System.Threading.Tasks;
 using SuperGlue.Cms.Localization;
 
 namespace SuperGlue.Cms.Tests
 {
     public class FakeLocalizer : ILocalizeText
     {
-        public string Localize(string key, CultureInfo culture)
+        public Task<string> Localize(string key, CultureInfo culture)
         {
             if (key == "test")
-                return "asd {replaceme} asd";
+                return Task.FromResult("asd {replaceme} asd");
 
-            return "";
+            return Task.FromResult("");
         }
 
-        public void Load()
+        public Task Load()
         {
-
+            return Task.CompletedTask;
         }
     }
 }

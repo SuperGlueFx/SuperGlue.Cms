@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SuperGlue.Cms.Components;
 using SuperGlue.Cms.Rendering;
@@ -17,14 +18,7 @@ namespace SuperGlue.Cms.Parsing
             _components = components;
         }
 
-        public override IEnumerable<string> GetTags()
-        {
-            yield return "component";
-            yield return "advanced";
-            yield return "multitarget";
-        }
-
-        protected override object FindParameterValue(Match match, ICmsRenderer cmsRenderer, Func<string, string> recurse)
+        protected override async Task<object> FindParameterValue(Match match, ICmsRenderer cmsRenderer, Func<string, Task<string>> recurse)
         {
             var componentNameGroup = match.Groups["componentName"];
 
@@ -55,9 +49,9 @@ namespace SuperGlue.Cms.Parsing
                 }
             }
 
-            var renderResult = cmsRenderer.RenderComponent(component, settings);
+            var renderResult = await cmsRenderer.RenderComponent(component, settings).ConfigureAwait(false);
 
-            return recurse(renderResult);
+            return await recurse(renderResult).ConfigureAwait(false);
         }
 
         protected override IEnumerable<Regex> GetRegexes()

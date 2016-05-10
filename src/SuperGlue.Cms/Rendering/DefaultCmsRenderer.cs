@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SuperGlue.Cms.Components;
 using SuperGlue.Cms.Parsing;
 using SuperGlue.Cms.Templates;
@@ -16,22 +17,19 @@ namespace SuperGlue.Cms.Rendering
             _textParsers = textParsers;
         }
 
-        public virtual string RenderComponent(ICmsComponent component, IDictionary<string, object> settings)
+        public virtual Task<string> RenderComponent(ICmsComponent component, IDictionary<string, object> settings)
         {
             return component.Render(settings);
         }
 
-        public virtual string RenderTemplate(CmsTemplate template, IDictionary<string, object> settings)
+        public virtual Task<string> RenderTemplate(CmsTemplate template, IDictionary<string, object> settings)
         {
-            return ParseText($"<md>{template.Body}</md>");
+            return Task.FromResult($"<md>{template.Body}</md>");
         }
 
-        public virtual string ParseText(string text, ParseTextOptions options = null)
+        public virtual async Task<string> ParseText(string text, ParseTextOptions options = null)
         {
             var parsers = _textParsers.ToList();
-
-            if (options != null && options.UseOnlyParsersTagged.Any())
-                parsers = parsers.Where(x => options.UseOnlyParsersTagged.All(y => x.GetTags().Contains(y))).ToList();
 
             foreach (var textParser in parsers)
             {
@@ -39,7 +37,7 @@ namespace SuperGlue.Cms.Rendering
 
                 try
                 {
-                    text = textParser.Parse(text, this, x => ParseText(x, useOptionsForNextLevel ? options : null));
+                    text = await textParser.Parse(text, this, x => ParseText(x, useOptionsForNextLevel ? options : null)).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {

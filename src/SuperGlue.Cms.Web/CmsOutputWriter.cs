@@ -15,16 +15,16 @@ namespace SuperGlue.Cms.Web
             _cmsRenderer = cmsRenderer;
         }
 
-        public Task Write(IDictionary<string, object> environment, OutputRenderingResult result)
+        public async Task Write(IDictionary<string, object> environment, OutputRenderingResult result)
         {
             if (result == null)
-                return Task.CompletedTask;
+                return;
 
             var response = environment.GetResponse();
 
             response.Headers.ContentType = result.ContentType;
 
-            return response.Write(_cmsRenderer.ParseText(result.Body));
+            await response.Write(await _cmsRenderer.ParseText(result.Body).ConfigureAwait(false)).ConfigureAwait(false);
         }
     }
 }

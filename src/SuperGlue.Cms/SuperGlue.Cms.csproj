@@ -48,6 +48,7 @@
     <Compile Include="Localization\LocalizationTextParser.cs" />
     <Compile Include="Localization\IFindCurrentLocalizationNamespace.cs" />
     <Compile Include="Localization\ILocalizeText.cs" />
+    <Compile Include="Parsing\RegExExtensions.cs" />
     <Compile Include="Rendering\ParseTextOptions.cs" />
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="Components\ICmsComponent.cs" />

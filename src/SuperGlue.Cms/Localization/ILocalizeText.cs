@@ -1,10 +1,11 @@
 ﻿using System.Globalization;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Cms.Localization
 {
     public interface ILocalizeText
     {
-        string Localize(string key, CultureInfo culture);
-        void Load();
+        Task<string> Localize(string key, CultureInfo culture);
+        Task Load();
     }
 }

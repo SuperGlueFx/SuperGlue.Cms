@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using Should;
 using SuperGlue.Cms.Localization;
 using SuperGlue.Cms.Parsing;
@@ -27,7 +28,7 @@ namespace SuperGlue.Cms.Tests
         {
             return _parser.Parse(input,
                 new DefaultCmsRenderer(new List<ITextParser> { _parser }),
-                x => x);
+                Task.FromResult).Result;
         }
     }
 }

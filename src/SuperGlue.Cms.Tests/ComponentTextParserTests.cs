@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Should;
 using SuperGlue.Cms.Components;
 using SuperGlue.Cms.Parsing;
@@ -30,7 +31,7 @@ namespace SuperGlue.Cms.Tests
         {
             var renderer = new DefaultCmsRenderer(new List<ITextParser> { _componentTextParser });
 
-            return _componentTextParser.Parse(input, renderer, x => x);
+            return _componentTextParser.Parse(input, renderer, Task.FromResult).Result;
         }
     }
 
@@ -39,9 +40,9 @@ namespace SuperGlue.Cms.Tests
         public string Name => GetType().Name;
         public string Category => "Test";
 
-        public string Render(IDictionary<string, object> settings)
+        public Task<string> Render(IDictionary<string, object> settings)
         {
-            return string.Join(", ", settings.Select(x => $"{x.Key}={x.Value}"));
+            return Task.FromResult(string.Join(", ", settings.Select(x => $"{x.Key}={x.Value}")));
         }
 
         public IDictionary<string, object> GetDefaultSettings()
