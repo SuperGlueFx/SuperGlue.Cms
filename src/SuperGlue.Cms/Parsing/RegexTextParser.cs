@@ -11,13 +11,13 @@ namespace SuperGlue.Cms.Parsing
     {
         protected virtual string SeperateListItemsWith => "\n";
 
-        public string Parse(string text, ICmsRenderer cmsRenderer, ICmsContext context, Func<string, string> recurse)
+        public string Parse(string text, ICmsRenderer cmsRenderer, Func<string, string> recurse)
         {
             text = text ?? "";
 
             text = GetRegexes().Aggregate(text, (current, regex) => regex.Replace(current, x =>
             {
-                var value = FindParameterValue(x, cmsRenderer, context, recurse);
+                var value = FindParameterValue(x, cmsRenderer, recurse);
 
                 if (value == null) return "";
 
@@ -36,7 +36,7 @@ namespace SuperGlue.Cms.Parsing
         }
 
         public abstract IEnumerable<string> GetTags();
-        protected abstract object FindParameterValue(Match match, ICmsRenderer cmsRenderer, ICmsContext context, Func<string, string> recurse);
+        protected abstract object FindParameterValue(Match match, ICmsRenderer cmsRenderer, Func<string, string> recurse);
         protected abstract IEnumerable<Regex> GetRegexes();
     }
 }

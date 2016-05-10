@@ -44,7 +44,6 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Cache.cs" />
-    <Compile Include="Features\FeatureSettings.cs" />
     <Compile Include="Localization\ILocalizationVisitor.cs" />
     <Compile Include="Localization\LocalizationTextParser.cs" />
     <Compile Include="Localization\IFindCurrentLocalizationNamespace.cs" />
@@ -52,16 +51,12 @@
     <Compile Include="Rendering\ParseTextOptions.cs" />
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="Components\ICmsComponent.cs" />
-    <Compile Include="DefaultCmsContext.cs" />
-    <Compile Include="Features\IBelongToFeatures.cs" />
-    <Compile Include="Features\IFeatureValidator.cs" />
     <Compile Include="Files\ITransformFiles.cs" />
     <Compile Include="Files\ITransformationSetting.cs" />
     <Compile Include="Files\IUploadFiles.cs" />
     <Compile Include="Files\MaxHeightTransformationSetting.cs" />
     <Compile Include="Files\MaxWidthTransformationSetting.cs" />
     <Compile Include="Files\UploadFile.cs" />
-    <Compile Include="ICmsContext.cs" />
     <Compile Include="Parsing\ComponentTextParser.cs" />
     <Compile Include="Parsing\DefaultParameterValueFinder.cs" />
     <Compile Include="Parsing\IFindParameterValueFromModel.cs" />

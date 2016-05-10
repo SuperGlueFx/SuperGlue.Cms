@@ -15,7 +15,7 @@ namespace SuperGlue.Cms.Parsing
             yield return "singletarget";
         }
 
-        protected override object FindParameterValue(Match match, ICmsRenderer cmsRenderer, ICmsContext context, Func<string, string> recurse)
+        protected override object FindParameterValue(Match match, ICmsRenderer cmsRenderer, Func<string, string> recurse)
         {
             var markdownParser = new Markdown(new MarkdownOptions
             {

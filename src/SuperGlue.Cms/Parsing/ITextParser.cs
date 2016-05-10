@@ -6,7 +6,7 @@ namespace SuperGlue.Cms.Parsing
 {
     public interface ITextParser
     {
-        string Parse(string text, ICmsRenderer cmsRenderer, ICmsContext context, Func<string, string> recurse);
+        string Parse(string text, ICmsRenderer cmsRenderer, Func<string, string> recurse);
         IEnumerable<string> GetTags();
     }
 }

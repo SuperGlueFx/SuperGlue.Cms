@@ -27,7 +27,7 @@ namespace SuperGlue.Cms.Localization
             yield return "multitarget";
         }
 
-        protected override object FindParameterValue(Match match, ICmsRenderer cmsRenderer, ICmsContext context, Func<string, string> recurse)
+        protected override object FindParameterValue(Match match, ICmsRenderer cmsRenderer, Func<string, string> recurse)
         {
             var localizationNamespace = _findCurrentLocalizationNamespace.Find();
 

@@ -23,7 +23,7 @@ namespace SuperGlue.Cms.Parsing
             yield return "multitarget";
         }
 
-        protected override object FindParameterValue(Match match, ICmsRenderer cmsRenderer, ICmsContext context, Func<string, string> recurse)
+        protected override object FindParameterValue(Match match, ICmsRenderer cmsRenderer, Func<string, string> recurse)
         {
             var templateNameGroup = match.Groups["templateName"];
 
@@ -54,7 +54,7 @@ namespace SuperGlue.Cms.Parsing
                 }
             }
 
-            return cmsRenderer.RenderTemplate(template, settings, context);
+            return cmsRenderer.RenderTemplate(template, settings);
         }
 
         protected override IEnumerable<Regex> GetRegexes()

@@ -16,17 +16,17 @@ namespace SuperGlue.Cms.Rendering
             _textParsers = textParsers;
         }
 
-        public virtual string RenderComponent(ICmsComponent component, IDictionary<string, object> settings, ICmsContext context)
+        public virtual string RenderComponent(ICmsComponent component, IDictionary<string, object> settings)
         {
-            return !context.CanRender(component) ? "" : component.Render(context, settings);
+            return component.Render(settings);
         }
 
-        public virtual string RenderTemplate(CmsTemplate template, IDictionary<string, object> settings, ICmsContext context)
+        public virtual string RenderTemplate(CmsTemplate template, IDictionary<string, object> settings)
         {
-            return !context.CanRender(template) ? "" : ParseText($"<md>{template.Body}</md>", context);
+            return ParseText($"<md>{template.Body}</md>");
         }
 
-        public virtual string ParseText(string text, ICmsContext context, ParseTextOptions options = null)
+        public virtual string ParseText(string text, ParseTextOptions options = null)
         {
             var parsers = _textParsers.ToList();
 
@@ -39,7 +39,7 @@ namespace SuperGlue.Cms.Rendering
 
                 try
                 {
-                    text = textParser.Parse(text, this, context, x => ParseText(x, context, useOptionsForNextLevel ? options : null));
+                    text = textParser.Parse(text, this, x => ParseText(x, useOptionsForNextLevel ? options : null));
                 }
                 catch (Exception)
                 {

@@ -30,7 +30,7 @@ namespace SuperGlue.Cms.Tests
         {
             var renderer = new DefaultCmsRenderer(new List<ITextParser> { _componentTextParser });
 
-            return _componentTextParser.Parse(input, renderer, new DefaultCmsContext(null), x => x);
+            return _componentTextParser.Parse(input, renderer, x => x);
         }
     }
 
@@ -39,7 +39,7 @@ namespace SuperGlue.Cms.Tests
         public string Name => GetType().Name;
         public string Category => "Test";
 
-        public string Render(ICmsContext context, IDictionary<string, object> settings)
+        public string Render(IDictionary<string, object> settings)
         {
             return string.Join(", ", settings.Select(x => $"{x.Key}={x.Value}"));
         }

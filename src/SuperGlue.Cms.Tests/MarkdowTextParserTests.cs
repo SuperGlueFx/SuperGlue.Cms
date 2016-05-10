@@ -39,7 +39,7 @@ namespace SuperGlue.Cms.Tests
         {
             return _parser.Parse(input,
                 new DefaultCmsRenderer(new List<ITextParser> { _parser }),
-                new DefaultCmsContext(null), x => x);
+                x => x);
         }
     }
 }

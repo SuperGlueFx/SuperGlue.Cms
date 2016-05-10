@@ -24,7 +24,7 @@ namespace SuperGlue.Cms.Parsing
             yield return "multitarget";
         }
 
-        protected override object FindParameterValue(Match match, ICmsRenderer cmsRenderer, ICmsContext context, Func<string, string> recurse)
+        protected override object FindParameterValue(Match match, ICmsRenderer cmsRenderer, Func<string, string> recurse)
         {
             var componentNameGroup = match.Groups["componentName"];
 
@@ -33,7 +33,7 @@ namespace SuperGlue.Cms.Parsing
 
             var componentName = componentNameGroup.Value;
 
-            var component = context.Filter(_components.Where(x => x.GetType().Name == componentName)).FirstOrDefault();
+            var component = _components.FirstOrDefault(x => x.GetType().Name == componentName);
 
             if (component == null)
                 return "";
@@ -55,7 +55,7 @@ namespace SuperGlue.Cms.Parsing
                 }
             }
 
-            var renderResult = cmsRenderer.RenderComponent(component, settings, context);
+            var renderResult = cmsRenderer.RenderComponent(component, settings);
 
             return recurse(renderResult);
         }

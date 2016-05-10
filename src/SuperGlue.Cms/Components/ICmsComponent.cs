@@ -7,7 +7,7 @@ namespace SuperGlue.Cms.Components
         string Name { get; }
         string Category { get; }
 
-        string Render(ICmsContext context, IDictionary<string, object> settings);
+        string Render(IDictionary<string, object> settings);
         IDictionary<string, object> GetDefaultSettings();
     }
 }
