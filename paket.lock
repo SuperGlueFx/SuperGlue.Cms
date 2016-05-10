@@ -5,3 +5,10 @@ NUGET
     MarkdownSharp (1.13)
     Newtonsoft.Json (8.0.3)
     Should (1.1.20)
+  remote: https://www.myget.org/F/jajo/api/v2
+  specs:
+    SuperGlue.Configuration (1.0.0.325)
+      Newtonsoft.Json
+    SuperGlue.Web.Output (1.0.0.325)
+      Newtonsoft.Json
+      SuperGlue.Configuration

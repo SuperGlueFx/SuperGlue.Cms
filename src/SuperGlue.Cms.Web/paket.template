@@ -1,11 +1,11 @@
 ﻿type file
-id SuperGlue.Cms
+id SuperGlue.Cms.Web
 version 1.0
 authors Mattias Jakobsson
 description
         SuperGlue Cms
 files
-    bin/Release/SuperGlue.Cms.dll ==> lib
+    bin/Release/SuperGlue.Cms.Web.dll ==> lib
 dependencies
-	MarkdownSharp
-	Newtonsoft.Json
+	SuperGlue.Web.Output
+	SuperGlue.Cms
