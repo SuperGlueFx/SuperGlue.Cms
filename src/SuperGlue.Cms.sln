@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Cms.Tests", "Supe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Cms.Web", "SuperGlue.Cms.Web\SuperGlue.Cms.Web.csproj", "{1C530CB6-626C-4F82-8CA7-5000F3494428}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Cms.Templates.Liquid", "SuperGlue.Cms.Templates.Liquid\SuperGlue.Cms.Templates.Liquid.csproj", "{2926346B-BB3D-42D8-9E4D-38231524F37E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{1C530CB6-626C-4F82-8CA7-5000F3494428}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C530CB6-626C-4F82-8CA7-5000F3494428}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C530CB6-626C-4F82-8CA7-5000F3494428}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2926346B-BB3D-42D8-9E4D-38231524F37E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2926346B-BB3D-42D8-9E4D-38231524F37E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2926346B-BB3D-42D8-9E4D-38231524F37E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2926346B-BB3D-42D8-9E4D-38231524F37E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

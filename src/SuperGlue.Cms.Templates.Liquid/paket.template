@@ -1,0 +1,11 @@
+﻿type file
+id SuperGlue.Cms.Templates.Liquid
+version 1.0
+authors Mattias Jakobsson
+description
+        Liquid template engine for SuperGlue Cms
+files
+    bin/Release/SuperGlue.Cms.Templates.Liquid.dll ==> lib
+dependencies
+	DotLiquid
+	SuperGlue.Cms

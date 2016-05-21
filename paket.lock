@@ -1,6 +1,7 @@
 NUGET
   remote: https://www.nuget.org/api/v2
   specs:
+    DotLiquid (1.8)
     Fixie (1.0.1)
     MarkdownSharp (1.13)
     Newtonsoft.Json (8.0.3)

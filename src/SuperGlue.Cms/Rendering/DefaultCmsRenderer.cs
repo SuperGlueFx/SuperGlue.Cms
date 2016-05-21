@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SuperGlue.Cms.Components;
 using SuperGlue.Cms.Parsing;
 using SuperGlue.Cms.Templates;
 
@@ -17,12 +16,7 @@ namespace SuperGlue.Cms.Rendering
             _textParsers = textParsers;
         }
 
-        public virtual Task<string> RenderComponent(ICmsComponent component, IDictionary<string, object> settings)
-        {
-            return component.Render(settings);
-        }
-
-        public virtual Task<string> RenderTemplate(CmsTemplate template, IDictionary<string, object> settings)
+        public virtual Task<string> RenderTemplate(CmsTemplate template)
         {
             return Task.FromResult($"<md>{template.Body}</md>");
         }
