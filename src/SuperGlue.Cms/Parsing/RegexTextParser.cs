@@ -1,6 +1,6 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SuperGlue.Cms.Rendering;
@@ -9,34 +9,33 @@ namespace SuperGlue.Cms.Parsing
 {
     public abstract class RegexTextParser : ITextParser
     {
-        protected virtual string SeperateListItemsWith => "\n";
-
-        public async Task<string> Parse(string text, ICmsRenderer cmsRenderer, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources)
+        public async Task<CompiledText> Compile(string text, IDictionary<string, object> environment, Func<string, Task<string>> recurse)
         {
             text = text ?? "";
+            var dataSources = new Dictionary<string, CompiledText.DataSource>();
 
             foreach (var regex in GetRegexes())
             {
                 text = await regex.ReplaceAsync(text, async x =>
                 {
-                    var value = await FindParameterValue(x, cmsRenderer, environment, dataSources).ConfigureAwait(false);
+                    var compiled = await CompileInner(x, environment, recurse).ConfigureAwait(false);
 
-                    if (value == null) return "";
+                    foreach (var dataSource in compiled.DataSources)
+                        dataSources[dataSource.Key] = dataSource.Value;
 
-                    var enumerableValue = value as IEnumerable;
-                    if (enumerableValue == null || value is string)
-                        return value.ToString();
-
-                    var stringValues = enumerableValue.OfType<object>().Select(y => y.ToString()).ToList();
-
-                    return string.Join(SeperateListItemsWith, stringValues);
+                    return compiled.Body;
                 }).ConfigureAwait(false);
             }
 
-            return text;
+            return new CompiledText(text, new ReadOnlyDictionary<string, CompiledText.DataSource>(dataSources));
         }
-        
-        protected abstract Task<object> FindParameterValue(Match match, ICmsRenderer cmsRenderer, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources);
+
+        public Task<string> Render(string text, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources)
+        {
+            return Task.FromResult(text);
+        }
+
+        protected abstract Task<CompiledText> CompileInner(Match match, IDictionary<string, object> environment, Func<string, Task<string>> recurse);
         protected abstract IEnumerable<Regex> GetRegexes();
     }
 }

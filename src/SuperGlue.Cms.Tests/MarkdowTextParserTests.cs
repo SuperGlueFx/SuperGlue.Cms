@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Should;
-using SuperGlue.Cms.Parsing;
-using SuperGlue.Cms.Rendering;
 using SuperGlue.Cms.Templates.Markdown;
 
 namespace SuperGlue.Cms.Tests
@@ -40,10 +37,11 @@ namespace SuperGlue.Cms.Tests
 
         private string Parse(string input)
         {
-            return _parser.Parse(input,
-                new DefaultCmsRenderer(new List<ITextParser> { _parser }),
-                new Dictionary<string, object>(), 
-                new ReadOnlyDictionary<string, dynamic>(new Dictionary<string, dynamic>())).Result;
+            return _parser.Compile(input,
+                new Dictionary<string, object>(),
+                Task.FromResult)
+                .Result
+                .Body;
         }
     }
 }

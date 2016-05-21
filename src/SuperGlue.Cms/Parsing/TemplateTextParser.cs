@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SuperGlue.Cms.Rendering;
@@ -17,21 +16,23 @@ namespace SuperGlue.Cms.Parsing
             _templateStorage = templateStorage;
         }
 
-        protected override async Task<object> FindParameterValue(Match match, ICmsRenderer cmsRenderer, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources)
+        protected override async Task<CompiledText> CompileInner(Match match, IDictionary<string, object> environment, Func<string, Task<string>> recurse)
         {
             var templateNameGroup = match.Groups["templateName"];
 
             if (templateNameGroup == null)
-                return "";
+                return new CompiledText("");
 
             var templateName = templateNameGroup.Value;
 
             var template = await _templateStorage.Load(templateName).ConfigureAwait(false);
 
             if (template == null)
-                return "";
+                return new CompiledText("");
 
-            return await cmsRenderer.ParseText(template.Body, environment, dataSources.ToDictionary(x => x.Key, x => x.Value)).ConfigureAwait(false);
+            var result = await recurse(template.Body).ConfigureAwait(false);
+
+            return new CompiledText(result);
         }
 
         protected override IEnumerable<Regex> GetRegexes()

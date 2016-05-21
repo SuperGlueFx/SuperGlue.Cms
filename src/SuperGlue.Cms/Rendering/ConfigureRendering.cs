@@ -11,6 +11,7 @@ namespace SuperGlue.Cms.Rendering
             yield return new ConfigurationSetupResult("superglue.Cms.RenderingSetup", environment =>
             {
                 environment.RegisterTransient(typeof(ICmsRenderer), typeof(DefaultCmsRenderer));
+                environment.RegisterAll(typeof(IExecuteDataSource));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

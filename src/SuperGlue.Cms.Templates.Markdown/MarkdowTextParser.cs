@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace SuperGlue.Cms.Templates.Markdown
 {
     public class MarkdowTextParser : RegexTextParser
     {
-        protected override Task<object> FindParameterValue(Match match, ICmsRenderer cmsRenderer, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources)
+        protected override Task<CompiledText> CompileInner(Match match, IDictionary<string, object> environment, Func<string, Task<string>> recurse)
         {
             var markdownParser = new MarkdownSharp.Markdown(new MarkdownOptions
             {
@@ -18,7 +19,7 @@ namespace SuperGlue.Cms.Templates.Markdown
 
             var mardown = match.Groups[1].Value;
 
-            return Task.FromResult<object>(string.IsNullOrEmpty(mardown) ? mardown : markdownParser.Transform(mardown));
+            return Task.FromResult(new CompiledText(string.IsNullOrEmpty(mardown) ? mardown : markdownParser.Transform(mardown)));
         }
 
         protected override IEnumerable<Regex> GetRegexes()

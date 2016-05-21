@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Cms
 {
@@ -15,7 +16,7 @@ namespace SuperGlue.Cms
 
         private Action<TValue> _onAddition = x => { };
 
-        private Func<TKey, TValue> _currentOnMissing = delegate(TKey key)
+        private Func<TKey, TValue> _currentOnMissing = delegate (TKey key)
         {
             var message = string.Format("Key '{0}' could not be found", key);
             throw new KeyNotFoundException(message);
@@ -104,6 +105,12 @@ namespace SuperGlue.Cms
             return _values[key];
         }
 
+        public async Task<TValue> GetAsync(TKey key, Func<TKey, Task<TValue>> onMissing)
+        {
+            await FillAsync(key, onMissing).ConfigureAwait(false);
+            return _values[key];
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable<TValue>)this).GetEnumerator();
@@ -134,6 +141,23 @@ namespace SuperGlue.Cms
                     {
 
                         var value = onMissing(key);
+                        _onAddition(value);
+                        _values.Add(key, value);
+                    }
+                }
+            }
+        }
+
+        public async Task FillAsync(TKey key, Func<TKey, Task<TValue>> onMissing)
+        {
+            if (!_values.ContainsKey(key))
+            {
+                var value = await onMissing(key).ConfigureAwait(false);
+
+                lock (_locker)
+                {
+                    if (!_values.ContainsKey(key))
+                    {
                         _onAddition(value);
                         _values.Add(key, value);
                     }
@@ -176,7 +200,7 @@ namespace SuperGlue.Cms
         {
             var returnValue = false;
 
-            Each(delegate(TValue value) { returnValue |= predicate(value); });
+            Each(delegate (TValue value) { returnValue |= predicate(value); });
 
             return returnValue;
         }

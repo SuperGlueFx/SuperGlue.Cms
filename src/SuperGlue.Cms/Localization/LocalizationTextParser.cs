@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -21,7 +22,7 @@ namespace SuperGlue.Cms.Localization
             _culture = culture;
         }
 
-        protected override async Task<object> FindParameterValue(Match match, ICmsRenderer cmsRenderer, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources)
+        protected override async Task<CompiledText> CompileInner(Match match, IDictionary<string, object> environment, Func<string, Task<string>> recurse)
         {
             var localizationNamespace = _findCurrentLocalizationNamespace.Find();
 
@@ -51,7 +52,9 @@ namespace SuperGlue.Cms.Localization
 
             localized = replacements.Aggregate(localized, (current, replacement) => current.Replace(string.Concat("{", replacement.Key, "}"), replacement.Value));
 
-            return await cmsRenderer.ParseText(localized, environment, dataSources.ToDictionary(x => x.Key, x => x.Value)).ConfigureAwait(false);
+            var result = await recurse(localized).ConfigureAwait(false);
+
+            return new CompiledText(result);
         }
 
         protected override IEnumerable<Regex> GetRegexes()

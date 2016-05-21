@@ -56,6 +56,7 @@
     <Compile Include="Files\ConfigureFiles.cs" />
     <Compile Include="Files\FileSystemFileUploader.cs" />
     <Compile Include="Localization\ConfigureLocalization.cs" />
+    <Compile Include="Localization\DataSourceTextParser.cs" />
     <Compile Include="Localization\DefaultLocalizationNamespaceFinder.cs" />
     <Compile Include="Localization\DefaultLocalizer.cs" />
     <Compile Include="Localization\ILocalizationVisitor.cs" />
@@ -64,7 +65,9 @@
     <Compile Include="Localization\ILocalizeText.cs" />
     <Compile Include="Parsing\ConfigureParsing.cs" />
     <Compile Include="Parsing\RegExExtensions.cs" />
+    <Compile Include="Rendering\CompiledText.cs" />
     <Compile Include="Rendering\ConfigureRendering.cs" />
+    <Compile Include="Rendering\IExecuteDataSource.cs" />
     <Compile Include="Templates\ConfigureTemplates.cs" />
     <Compile Include="Templates\FileSystemTemplatesSettings.cs" />
     <Compile Include="Templates\FileSystemTemplateStorage.cs" />

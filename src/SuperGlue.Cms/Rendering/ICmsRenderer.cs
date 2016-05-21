@@ -5,6 +5,7 @@ namespace SuperGlue.Cms.Rendering
 {
     public interface ICmsRenderer
     {
-        Task<string> ParseText(string text, IDictionary<string, object> environment, IDictionary<string, dynamic> dataSources = null);
+        Task<CompiledText> Compile(string text, IDictionary<string, object> environment);
+        Task<string> Render(CompiledText text, IDictionary<string, object> environment);
     }
 }

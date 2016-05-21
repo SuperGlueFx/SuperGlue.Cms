@@ -16,9 +16,10 @@ namespace SuperGlue.Cms.Web
 
         public async Task<OutputRenderingResult> Transform(OutputRenderingResult result, IDictionary<string, object> environment)
         {
-            var parsed = await _cmsRenderer.ParseText(result.Body, environment).ConfigureAwait(false);
+            var compiled = await _cmsRenderer.Compile(result.Body, environment).ConfigureAwait(false);
+            var rendered = await _cmsRenderer.Render(compiled, environment).ConfigureAwait(false);
 
-            return new OutputRenderingResult(parsed, result.ContentType);
+            return new OutputRenderingResult(rendered, result.ContentType);
         }
     }
 }

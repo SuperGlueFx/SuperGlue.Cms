@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,7 +15,12 @@ namespace SuperGlue.Cms.Templates.Liquid
     {
         private static readonly Cache<string, Template> ParsedTemplates = new Cache<string, Template>();
 
-        public Task<string> Parse(string text, ICmsRenderer cmsRenderer, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources)
+        public Task<CompiledText> Compile(string text, IDictionary<string, object> environment, Func<string, Task<string>> recurse)
+        {
+            return Task.FromResult(new CompiledText(text, new ReadOnlyDictionary<string, CompiledText.DataSource>(new Dictionary<string, CompiledText.DataSource>())));
+        }
+
+        public Task<string> Render(string text, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources)
         {
             var hash = CalculateHash(text);
 
