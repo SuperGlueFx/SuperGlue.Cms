@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Threading.Tasks;
 using Should;
@@ -28,7 +29,8 @@ namespace SuperGlue.Cms.Tests
         {
             return _parser.Parse(input,
                 new DefaultCmsRenderer(new List<ITextParser> { _parser }),
-                Task.FromResult).Result;
+                new Dictionary<string, object>(), 
+                new ReadOnlyDictionary<string, dynamic>(new Dictionary<string, dynamic>())).Result;
         }
     }
 }

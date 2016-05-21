@@ -1,0 +1,11 @@
+﻿type file
+id SuperGlue.Cms.Templates.Markdown
+version 1.0
+authors Mattias Jakobsson
+description
+        Markdown support for SuperGlue Cms
+files
+    bin/Release/SuperGlue.Cms.Templates.Markdown.dll ==> lib
+dependencies
+	MarkdownSharp
+	SuperGlue.Cms

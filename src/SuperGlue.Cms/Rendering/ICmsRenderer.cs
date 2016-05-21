@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-using SuperGlue.Cms.Templates;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Cms.Rendering
 {
     public interface ICmsRenderer
     {
-        Task<string> RenderTemplate(CmsTemplate template);
-        Task<string> ParseText(string text, ParseTextOptions options = null);
+        Task<string> ParseText(string text, IDictionary<string, object> environment, IDictionary<string, dynamic> dataSources = null);
     }
 }

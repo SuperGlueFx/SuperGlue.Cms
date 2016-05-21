@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SuperGlue.Cms.Templates.Liquid")]
+[assembly: AssemblyTitle("SuperGlue.Cms.Templates.Markdown")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SuperGlue.Cms.Templates.Liquid")]
+[assembly: AssemblyProduct("SuperGlue.Cms.Templates.Markdown")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,4 +19,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2926346b-bb3d-42d8-9e4d-38231524f37e")]
+[assembly: Guid("fa88d320-1d66-4dac-b9a9-fb6fd945266c")]

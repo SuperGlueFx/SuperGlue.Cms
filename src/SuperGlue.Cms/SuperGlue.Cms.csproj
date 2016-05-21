@@ -46,6 +46,9 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\LogExtensions.cs">
+      <Link>LogExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\ResolveExtensions.cs">
       <Link>ResolveExtensions.cs</Link>
     </Compile>
@@ -62,7 +65,6 @@
     <Compile Include="Parsing\ConfigureParsing.cs" />
     <Compile Include="Parsing\RegExExtensions.cs" />
     <Compile Include="Rendering\ConfigureRendering.cs" />
-    <Compile Include="Rendering\ParseTextOptions.cs" />
     <Compile Include="Templates\ConfigureTemplates.cs" />
     <Compile Include="Templates\FileSystemTemplatesSettings.cs" />
     <Compile Include="Templates\FileSystemTemplateStorage.cs" />
@@ -77,7 +79,6 @@
     <Compile Include="Parsing\IFindParameterValueFromModel.cs" />
     <Compile Include="Parsing\IParseModelExpression.cs" />
     <Compile Include="Parsing\ITextParser.cs" />
-    <Compile Include="Parsing\MarkdowTextParser.cs" />
     <Compile Include="Parsing\ModelExpressionParseResult.cs" />
     <Compile Include="Parsing\ParsePropertyExpressionPart.cs" />
     <Compile Include="Parsing\RegexTextParser.cs" />
@@ -100,17 +101,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v3.5' Or $(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1' Or $(TargetFrameworkVersion) == 'v4.6.2')">
-      <ItemGroup>
-        <Reference Include="MarkdownSharp">
-          <HintPath>..\..\packages\MarkdownSharp\lib\35\MarkdownSharp.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v3.5'">
       <ItemGroup>

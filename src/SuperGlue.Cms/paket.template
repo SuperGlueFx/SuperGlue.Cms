@@ -7,5 +7,4 @@ description
 files
     bin/Release/SuperGlue.Cms.dll ==> lib
 dependencies
-	MarkdownSharp
 	Newtonsoft.Json

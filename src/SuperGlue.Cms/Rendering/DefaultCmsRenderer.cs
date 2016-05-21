@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.Cms.Parsing;
-using SuperGlue.Cms.Templates;
 
 namespace SuperGlue.Cms.Rendering
 {
@@ -16,26 +16,21 @@ namespace SuperGlue.Cms.Rendering
             _textParsers = textParsers;
         }
 
-        public virtual Task<string> RenderTemplate(CmsTemplate template)
-        {
-            return Task.FromResult($"<md>{template.Body}</md>");
-        }
-
-        public virtual async Task<string> ParseText(string text, ParseTextOptions options = null)
+        public virtual async Task<string> ParseText(string text, IDictionary<string, object> environment, IDictionary<string, dynamic> dataSources = null)
         {
             var parsers = _textParsers.ToList();
 
+            dataSources = dataSources ?? new Dictionary<string, dynamic>();
+
             foreach (var textParser in parsers)
             {
-                var useOptionsForNextLevel = options != null && !options.FilterOnlyFirstLevel;
-
                 try
                 {
-                    text = await textParser.Parse(text, this, x => ParseText(x, useOptionsForNextLevel ? options : null)).ConfigureAwait(false);
+                    text = await textParser.Parse(text, this, environment, new ReadOnlyDictionary<string, dynamic>(dataSources)).ConfigureAwait(false);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    //TODO:Log exception
+                    environment.Log(ex, $"Failed parsing text with parser: {textParser.GetType().FullName}", LogLevel.Warn);
                 }
             }
 

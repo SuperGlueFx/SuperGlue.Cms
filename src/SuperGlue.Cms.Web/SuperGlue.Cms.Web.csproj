@@ -49,8 +49,7 @@
     <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
       <Link>WebEnvironmentExtensions.cs</Link>
     </Compile>
-    <Compile Include="CmsOutputWriter.cs" />
-    <Compile Include="ConfigureWeb.cs" />
+    <Compile Include="CmsOutputParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
