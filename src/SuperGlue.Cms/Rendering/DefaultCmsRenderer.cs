@@ -59,12 +59,18 @@ namespace SuperGlue.Cms.Rendering
             });
         }
 
-        public async Task<string> Render(CompiledText text, IDictionary<string, object> environment)
+        public async Task<string> Render(CompiledText text, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources = null)
         {
-            var dataSources = new Dictionary<string, dynamic>
+            var currentDataSources = new Dictionary<string, dynamic>
             {
                 ["Environment"] = environment
             };
+
+            if (dataSources != null)
+            {
+                foreach (var dataSource in dataSources)
+                    currentDataSources[dataSource.Key] = dataSource.Value;
+            }
 
             foreach (var dataSource in text.DataSources)
             {
@@ -77,7 +83,7 @@ namespace SuperGlue.Cms.Rendering
                     continue;
                 }
 
-                dataSources[dataSource.Key] = await executor.Execute(dataSource.Value.Settings).ConfigureAwait(false);
+                currentDataSources[dataSource.Key] = await executor.Execute(dataSource.Value.Settings).ConfigureAwait(false);
             }
 
             var parsers = _textParsers.ToList();
@@ -88,7 +94,7 @@ namespace SuperGlue.Cms.Rendering
             {
                 try
                 {
-                    currentText = await parser.Render(currentText, environment, dataSources).ConfigureAwait(false);
+                    currentText = await parser.Render(currentText, environment, currentDataSources).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
