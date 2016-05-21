@@ -61,10 +61,7 @@ namespace SuperGlue.Cms.Rendering
 
         public async Task<string> Render(CompiledText text, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources = null)
         {
-            var currentDataSources = new Dictionary<string, dynamic>
-            {
-                ["Environment"] = environment
-            };
+            var currentDataSources = new Dictionary<string, dynamic>();
 
             if (dataSources != null)
             {
