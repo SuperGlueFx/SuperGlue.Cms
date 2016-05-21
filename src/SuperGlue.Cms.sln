@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Cms.Templates.Liq
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Cms.Templates.Markdown", "SuperGlue.Cms.Templates.Markdown\SuperGlue.Cms.Templates.Markdown.csproj", "{FA88D320-1D66-4DAC-B9A9-FB6FD945266C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Cms.Localization", "SuperGlue.Cms.Localization\SuperGlue.Cms.Localization.csproj", "{43458E0D-B734-4FB3-A17E-55B23137E941}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{FA88D320-1D66-4DAC-B9A9-FB6FD945266C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA88D320-1D66-4DAC-B9A9-FB6FD945266C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA88D320-1D66-4DAC-B9A9-FB6FD945266C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43458E0D-B734-4FB3-A17E-55B23137E941}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43458E0D-B734-4FB3-A17E-55B23137E941}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43458E0D-B734-4FB3-A17E-55B23137E941}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43458E0D-B734-4FB3-A17E-55B23137E941}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

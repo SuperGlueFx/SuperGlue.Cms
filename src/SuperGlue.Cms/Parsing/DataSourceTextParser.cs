@@ -4,10 +4,9 @@ using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using SuperGlue.Cms.Parsing;
 using SuperGlue.Cms.Rendering;
 
-namespace SuperGlue.Cms.Localization
+namespace SuperGlue.Cms.Parsing
 {
     public class DataSourceTextParser : RegexTextParser
     {

@@ -1,0 +1,12 @@
+﻿type file
+id SuperGlue.Cms.Localization
+version 1.0
+authors Mattias Jakobsson
+description
+        Localization for SuperGlue Cms
+files
+    bin/Release/SuperGlue.Cms.Localization.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.FileSystem
+	SuperGlue.Cms

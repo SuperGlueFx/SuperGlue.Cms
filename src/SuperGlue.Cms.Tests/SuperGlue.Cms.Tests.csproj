@@ -47,6 +47,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SuperGlue.Cms.Localization\SuperGlue.Cms.Localization.csproj">
+      <Project>{43458e0d-b734-4fb3-a17e-55b23137e941}</Project>
+      <Name>SuperGlue.Cms.Localization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuperGlue.Cms.Templates.Markdown\SuperGlue.Cms.Templates.Markdown.csproj">
       <Project>{fa88d320-1d66-4dac-b9a9-fb6fd945266c}</Project>
       <Name>SuperGlue.Cms.Templates.Markdown</Name>
