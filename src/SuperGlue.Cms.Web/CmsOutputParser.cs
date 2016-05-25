@@ -23,7 +23,9 @@ namespace SuperGlue.Cms.Web
                 var content = await reader.ReadToEndAsync().ConfigureAwait(false);
 
                 var compiled = await _cmsRenderer.Compile(content, environment).ConfigureAwait(false);
+                environment.Log("Cms content compiled", LogLevel.Debug);
                 var rendered = await _cmsRenderer.Render(compiled, environment).ConfigureAwait(false);
+                environment.Log("Cms content rendered", LogLevel.Debug);
 
                 return new OutputRenderingResult(await rendered.ToStream().ConfigureAwait(false), result.ContentType);
             }
