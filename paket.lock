@@ -8,12 +8,12 @@ NUGET
     Should (1.1.20)
   remote: https://www.myget.org/F/jajo/api/v2
   specs:
-    SuperGlue.Caching (1.0.0.344)
+    SuperGlue.Caching (1.0.0.346)
       SuperGlue.Configuration
-    SuperGlue.Configuration (1.0.0.344)
+    SuperGlue.Configuration (1.0.0.346)
       Newtonsoft.Json
-    SuperGlue.FileSystem (1.0.0.344)
+    SuperGlue.FileSystem (1.0.0.346)
       SuperGlue.Configuration
-    SuperGlue.Web.Output (1.0.0.344)
+    SuperGlue.Web.Output (1.0.0.346)
       Newtonsoft.Json
       SuperGlue.Configuration
