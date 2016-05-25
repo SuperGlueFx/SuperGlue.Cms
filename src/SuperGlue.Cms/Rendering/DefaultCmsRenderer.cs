@@ -29,7 +29,7 @@ namespace SuperGlue.Cms.Rendering
 		{
 			var key = CalculateHash(text);
 
-			var compiledText = await _cache.Get<CompiledText>(key);
+			var compiledText = await _cache.Get<CompiledText>(key).ConfigureAwait(false);
 
 			if (compiledText != null)
 				return compiledText;
@@ -64,7 +64,7 @@ namespace SuperGlue.Cms.Rendering
 				}
 			}
 
-			await _cache.Set(key, currentText, environment.GetSettings<RenderingSettings>().CompiliationCacheTimeout);
+			await _cache.Set(key, currentText, environment.GetSettings<RenderingSettings>().CompiliationCacheTimeout).ConfigureAwait(false);
 
 			return currentText;
 		}
