@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
@@ -12,6 +13,8 @@ namespace SuperGlue.Cms.Rendering
             {
                 environment.RegisterTransient(typeof(ICmsRenderer), typeof(DefaultCmsRenderer));
                 environment.RegisterAll(typeof(IExecuteDataSource));
+
+	            environment.AlterSettings<RenderingSettings>(x => x.CacheCompilationsFor(TimeSpan.FromMinutes(10)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

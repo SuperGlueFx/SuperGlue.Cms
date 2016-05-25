@@ -5,6 +5,7 @@ nuget Fixie
 nuget MarkdownSharp
 nuget NewtonSoft.Json
 nuget Should
+nuget SuperGlue.Caching
 nuget SuperGlue.Configuration
 nuget SuperGlue.FileSystem
 nuget SuperGlue.Web.Output

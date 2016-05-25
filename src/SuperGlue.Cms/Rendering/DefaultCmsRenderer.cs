@@ -5,117 +5,129 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using SuperGlue.Caching;
 using SuperGlue.Cms.Parsing;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.Cms.Rendering
 {
-    public class DefaultCmsRenderer : ICmsRenderer
-    {
-        private readonly IEnumerable<ITextParser> _textParsers;
-        private readonly IEnumerable<IExecuteDataSource> _executeDataSources;
-        private static readonly Cache<string, CompiledText> CompiledTexts = new Cache<string, CompiledText>();
+	public class DefaultCmsRenderer : ICmsRenderer
+	{
+		private readonly IEnumerable<ITextParser> _textParsers;
+		private readonly IEnumerable<IExecuteDataSource> _executeDataSources;
+		private readonly ICache _cache;
 
-        public DefaultCmsRenderer(IEnumerable<ITextParser> textParsers, IEnumerable<IExecuteDataSource> executeDataSources)
-        {
-            _textParsers = textParsers;
-            _executeDataSources = executeDataSources;
-        }
+		public DefaultCmsRenderer(IEnumerable<ITextParser> textParsers, IEnumerable<IExecuteDataSource> executeDataSources,
+			ICache cache)
+		{
+			_textParsers = textParsers;
+			_executeDataSources = executeDataSources;
+			_cache = cache;
+		}
 
-        public Task<CompiledText> Compile(string text, IDictionary<string, object> environment)
-        {
-            return CompiledTexts.GetAsync(CalculateHash(text), async hash =>
-            {
-                var parsers = _textParsers.ToList();
-                var currentText = new CompiledText(text, new ReadOnlyDictionary<string, CompiledText.DataSource>(new Dictionary<string, CompiledText.DataSource>()));
+		public async Task<CompiledText> Compile(string text, IDictionary<string, object> environment)
+		{
+			var key = CalculateHash(text);
 
-                foreach (var parser in parsers)
-                {
-                    var dataSources = currentText.DataSources.ToDictionary(x => x.Key, x => x.Value);
+			var compiledText = await _cache.Get<CompiledText>(key);
 
-                    try
-                    {
-                        var compiled = await parser.Compile(currentText.Body, environment, async x =>
-                        {
-                            var recurseCompiled = await Compile(x, environment).ConfigureAwait(false);
+			if (compiledText != null)
+				return compiledText;
 
-                            foreach (var dataSource in recurseCompiled.DataSources)
-                                dataSources[dataSource.Key] = dataSource.Value;
+			var parsers = _textParsers.ToList();
+			var currentText = new CompiledText(text, new ReadOnlyDictionary<string, CompiledText.DataSource>(new Dictionary<string, CompiledText.DataSource>()));
 
-                            return recurseCompiled.Body;
-                        }).ConfigureAwait(false);
+			foreach (var parser in parsers)
+			{
+				var dataSources = currentText.DataSources.ToDictionary(x => x.Key, x => x.Value);
 
-                        foreach (var dataSource in compiled.DataSources)
-                            dataSources[dataSource.Key] = dataSource.Value;
+				try
+				{
+					var compiled = await parser.Compile(currentText.Body, environment, async x =>
+					               {
+						               var recurseCompiled = await Compile(x, environment).ConfigureAwait(false);
 
-                        currentText = new CompiledText(compiled.Body, new ReadOnlyDictionary<string, CompiledText.DataSource>(dataSources));
-                    }
-                    catch (Exception ex)
-                    {
-                        environment.Log(ex, $"Failed compiling text with parser: {parser.GetType().FullName}", LogLevel.Warn);
-                    }
-                }
+						               foreach (var dataSource in recurseCompiled.DataSources)
+							               dataSources[dataSource.Key] = dataSource.Value;
 
-                return currentText;
-            });
-        }
+						               return recurseCompiled.Body;
+					               }).ConfigureAwait(false);
 
-        public async Task<string> Render(CompiledText text, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources = null)
-        {
-            var currentDataSources = new Dictionary<string, dynamic>();
+					foreach (var dataSource in compiled.DataSources)
+						dataSources[dataSource.Key] = dataSource.Value;
 
-            if (dataSources != null)
-            {
-                foreach (var dataSource in dataSources)
-                    currentDataSources[dataSource.Key] = dataSource.Value;
-            }
+					currentText = new CompiledText(compiled.Body, new ReadOnlyDictionary<string, CompiledText.DataSource>(dataSources));
+				}
+				catch (Exception ex)
+				{
+					environment.Log(ex, $"Failed compiling text with parser: {parser.GetType().FullName}", LogLevel.Warn);
+				}
+			}
 
-            foreach (var dataSource in text.DataSources)
-            {
-                var executor = _executeDataSources.FirstOrDefault(x => x.Type == dataSource.Value.Type);
+			await _cache.Set(key, currentText, environment.GetSettings<RenderingSettings>().CompiliationCacheTimeout);
 
-                if (executor == null)
-                {
-                    environment.Log($"Can't find executor for datasource: {dataSource.Key} of type {dataSource.Value.Type}", LogLevel.Warn);
+			return currentText;
+		}
 
-                    continue;
-                }
+		public async Task<string> Render(CompiledText text, IDictionary<string, object> environment,
+			IReadOnlyDictionary<string, dynamic> dataSources = null)
+		{
+			var currentDataSources = new Dictionary<string, dynamic>();
 
-                currentDataSources[dataSource.Key] = await executor.Execute(dataSource.Value.Settings).ConfigureAwait(false);
-            }
+			if (dataSources != null)
+			{
+				foreach (var dataSource in dataSources)
+					currentDataSources[dataSource.Key] = dataSource.Value;
+			}
 
-            var parsers = _textParsers.ToList();
+			foreach (var dataSource in text.DataSources)
+			{
+				var executor = _executeDataSources.FirstOrDefault(x => x.Type == dataSource.Value.Type);
 
-            var currentText = text.Body;
+				if (executor == null)
+				{
+					environment.Log($"Can't find executor for datasource: {dataSource.Key} of type {dataSource.Value.Type}",
+						LogLevel.Warn);
 
-            foreach (var parser in parsers)
-            {
-                try
-                {
-                    currentText = await parser.Render(currentText, environment, currentDataSources).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    environment.Log(ex, $"Failed rendering text with parser: {parser.GetType().FullName}", LogLevel.Warn);
-                }
-            }
+					continue;
+				}
 
-            return currentText;
-        }
+				currentDataSources[dataSource.Key] = await executor.Execute(dataSource.Value.Settings).ConfigureAwait(false);
+			}
 
-        private static string CalculateHash(string input)
-        {
-            var md5 = MD5.Create();
+			var parsers = _textParsers.ToList();
 
-            var inputBytes = Encoding.ASCII.GetBytes(input);
+			var currentText = text.Body;
 
-            var hash = md5.ComputeHash(inputBytes);
+			foreach (var parser in parsers)
+			{
+				try
+				{
+					currentText = await parser.Render(currentText, environment, currentDataSources).ConfigureAwait(false);
+				}
+				catch (Exception ex)
+				{
+					environment.Log(ex, $"Failed rendering text with parser: {parser.GetType().FullName}", LogLevel.Warn);
+				}
+			}
 
-            var sb = new StringBuilder();
+			return currentText;
+		}
 
-            foreach (var t in hash)
-                sb.Append(t.ToString("X2"));
+		private static string CalculateHash(string input)
+		{
+			var md5 = MD5.Create();
 
-            return sb.ToString();
-        }
-    }
+			var inputBytes = Encoding.ASCII.GetBytes(input);
+
+			var hash = md5.ComputeHash(inputBytes);
+
+			var sb = new StringBuilder();
+
+			foreach (var t in hash)
+				sb.Append(t.ToString("X2"));
+
+			return sb.ToString();
+		}
+	}
 }
