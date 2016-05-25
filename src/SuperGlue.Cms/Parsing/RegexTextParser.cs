@@ -14,10 +14,16 @@ namespace SuperGlue.Cms.Parsing
             text = text ?? "";
             var dataSources = new Dictionary<string, CompiledText.DataSource>();
 
+            environment.Log($"Going to compile using regex parser: {GetType().FullName}", LogLevel.Debug);
+
             foreach (var regex in GetRegexes())
             {
+                environment.Log($"Replacing using parser: {GetType().FullName} with regex: {regex}", LogLevel.Debug);
+
                 text = await regex.ReplaceAsync(text, async x =>
                 {
+                    environment.Log($"Regex parser: {GetType().FullName} found a match", LogLevel.Debug);
+
                     var compiled = await CompileInner(x, environment, recurse).ConfigureAwait(false);
 
                     foreach (var dataSource in compiled.DataSources)
