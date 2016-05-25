@@ -55,6 +55,7 @@
     <Compile Include="IFindCurrentLocalizationNamespace.cs" />
     <Compile Include="ILocalizationVisitor.cs" />
     <Compile Include="ILocalizeText.cs" />
+    <Compile Include="LocalizationSettings.cs" />
     <Compile Include="LocalizationTextParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

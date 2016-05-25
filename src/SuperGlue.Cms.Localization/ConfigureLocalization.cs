@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
@@ -13,6 +14,7 @@ namespace SuperGlue.Cms.Localization
                 environment.RegisterAll(typeof(ILocalizationVisitor));
                 environment.RegisterTransient(typeof(IFindCurrentLocalizationNamespace), typeof(DefaultLocalizationNamespaceFinder));
                 environment.RegisterTransient(typeof(ILocalizeText), typeof(DefaultLocalizer));
+                environment.RegisterTransient(typeof(CultureInfo), (x, y) => y.GetSettings<LocalizationSettings>().GetCulture(y));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");
