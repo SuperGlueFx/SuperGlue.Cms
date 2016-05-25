@@ -8,3 +8,5 @@ files
     bin/Release/SuperGlue.Cms.dll ==> lib
 dependencies
 	Newtonsoft.Json
+	SuperGlue.Caching
+	SuperGlue.FileSystem
