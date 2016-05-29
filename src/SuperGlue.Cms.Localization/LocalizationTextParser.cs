@@ -22,6 +22,11 @@ namespace SuperGlue.Cms.Localization
             _culture = culture;
         }
 
+        public override void SetUp(ISetupTextParser setup)
+        {
+            setup.DependsOn(x => _culture.Name);
+        }
+
         protected override async Task<CompiledText> CompileInner(Match match, IDictionary<string, object> environment, Func<string, Task<string>> recurse)
         {
             var localizationNamespace = _findCurrentLocalizationNamespace.Find();

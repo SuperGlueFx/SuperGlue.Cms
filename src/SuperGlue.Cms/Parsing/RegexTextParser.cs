@@ -9,6 +9,11 @@ namespace SuperGlue.Cms.Parsing
 {
     public abstract class RegexTextParser : ITextParser
     {
+        public virtual void SetUp(ISetupTextParser setup)
+        {
+            
+        }
+
         public async Task<CompiledText> Compile(string text, IDictionary<string, object> environment, Func<string, Task<string>> recurse)
         {
             text = text ?? "";

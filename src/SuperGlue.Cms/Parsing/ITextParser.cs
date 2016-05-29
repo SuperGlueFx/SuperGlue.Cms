@@ -7,6 +7,7 @@ namespace SuperGlue.Cms.Parsing
 {
     public interface ITextParser
     {
+        void SetUp(ISetupTextParser setup);
         Task<CompiledText> Compile(string text, IDictionary<string, object> environment, Func<string, Task<string>> recurse);
         Task<string> Render(string text, IDictionary<string, object> environment, IReadOnlyDictionary<string, dynamic> dataSources);
     }

@@ -27,14 +27,24 @@ namespace SuperGlue.Cms.Rendering
 
 		public async Task<CompiledText> Compile(string text, IDictionary<string, object> environment)
 		{
-			var key = CalculateHash(text);
+		    var setupTextParser = new SetupTextParser(environment);
+
+            var parsers = _textParsers.ToList();
+
+		    foreach (var parser in parsers)
+		    {
+		        environment.Log($"Setting up using parser {parser.GetType().FullName}", LogLevel.Debug);
+
+                parser.SetUp(setupTextParser);
+		    }
+
+		    var key = setupTextParser.GetCacheKey(text);
 
 			var compiledText = await _cache.Get<CompiledText>(key).ConfigureAwait(false);
 
 			if (compiledText != null)
 				return compiledText;
 
-			var parsers = _textParsers.ToList();
 			var currentText = new CompiledText(text, new ReadOnlyDictionary<string, CompiledText.DataSource>(new Dictionary<string, CompiledText.DataSource>()));
 
 			foreach (var parser in parsers)
@@ -118,20 +128,41 @@ namespace SuperGlue.Cms.Rendering
 			return currentText;
 		}
 
-		private static string CalculateHash(string input)
-		{
-			var md5 = MD5.Create();
+	    private class SetupTextParser : ISetupTextParser
+	    {
+	        private readonly IDictionary<string, object> _environment;
+            private readonly StringBuilder _cacheKeyBuilder = new StringBuilder();
 
-			var inputBytes = Encoding.ASCII.GetBytes(input);
+	        public SetupTextParser(IDictionary<string, object> environment)
+	        {
+	            _environment = environment;
+	        }
 
-			var hash = md5.ComputeHash(inputBytes);
+	        public void DependsOn(Func<IDictionary<string, object>, object> func)
+	        {
+	            _cacheKeyBuilder.Append(func(_environment));
+	        }
 
-			var sb = new StringBuilder();
+	        public string GetCacheKey(string input)
+	        {
+	            return CalculateHash($"{input}-{_cacheKeyBuilder}");
+	        }
 
-			foreach (var t in hash)
-				sb.Append(t.ToString("X2"));
+            private static string CalculateHash(string input)
+            {
+                var md5 = MD5.Create();
 
-			return sb.ToString();
-		}
+                var inputBytes = Encoding.ASCII.GetBytes(input);
+
+                var hash = md5.ComputeHash(inputBytes);
+
+                var sb = new StringBuilder();
+
+                foreach (var t in hash)
+                    sb.Append(t.ToString("X2"));
+
+                return sb.ToString();
+            }
+        }
 	}
 }

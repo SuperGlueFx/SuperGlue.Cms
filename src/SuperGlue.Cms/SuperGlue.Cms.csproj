@@ -56,6 +56,7 @@
     <Compile Include="Files\FileSystemFileUploader.cs" />
     <Compile Include="Parsing\DataSourceTextParser.cs" />
     <Compile Include="Parsing\ConfigureParsing.cs" />
+    <Compile Include="Parsing\ISetupTextParser.cs" />
     <Compile Include="Parsing\RegExExtensions.cs" />
     <Compile Include="Rendering\CompiledText.cs" />
     <Compile Include="Rendering\ConfigureRendering.cs" />
