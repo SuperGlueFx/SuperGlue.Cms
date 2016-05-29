@@ -41,6 +41,8 @@ namespace SuperGlue.Cms.Rendering
 			{
 				var dataSources = currentText.DataSources.ToDictionary(x => x.Key, x => x.Value);
 
+                environment.Log($"Compiling using parser: {parser.GetType().FullName}", LogLevel.Debug);
+
 				try
 				{
 					var compiled = await parser.Compile(currentText.Body, environment, async x =>
@@ -101,7 +103,9 @@ namespace SuperGlue.Cms.Rendering
 
 			foreach (var parser in parsers)
 			{
-				try
+                environment.Log($"Parsing using parser: {parser.GetType().FullName}", LogLevel.Debug);
+
+                try
 				{
 					currentText = await parser.Render(currentText, environment, currentDataSources).ConfigureAwait(false);
 				}
