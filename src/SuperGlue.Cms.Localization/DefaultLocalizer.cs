@@ -29,7 +29,7 @@ namespace SuperGlue.Cms.Localization
             _environment = environment;
         }
 
-        public virtual Task<string> Localize(string key, CultureInfo culture)
+        public virtual async Task<string> Localize(string key, CultureInfo culture)
         {
             var translationKey = key;
             var writeMissing = true;
@@ -40,7 +40,7 @@ namespace SuperGlue.Cms.Localization
                 var translationResult = GetTranslation(translationKey, culture);
 
                 if (translationResult.Item2)
-                    return Task.FromResult(_visitors.Aggregate(translationResult.Item1, (current, visitor) => visitor.AfterLocalized(translationKey, current)));
+                    return _visitors.Aggregate(translationResult.Item1, (current, visitor) => visitor.AfterLocalized(translationKey, current));
 
                 if (writeMissing)
                     missingKeys.Add(translationKey);
@@ -51,18 +51,18 @@ namespace SuperGlue.Cms.Localization
 
                 if (keyParts.Length <= 1)
                 {
-                    WriteMissing(missingKeys, culture);
+                    await WriteMissing(missingKeys, culture).ConfigureAwait(false);
 
-                    return Task.FromResult(text);
+                    return text;
                 }
 
                 var namespaceParts = keyParts.Take(keyParts.Length - 1).ToArray();
 
                 if (namespaceParts.Length <= 0)
                 {
-                    WriteMissing(missingKeys, culture);
+                    await WriteMissing(missingKeys, culture).ConfigureAwait(false);
 
-                    return Task.FromResult(text);
+                    return text;
                 }
 
                 var namespacePartsToUse = namespaceParts.Take(namespaceParts.Length - 1).ToArray();
@@ -98,7 +98,7 @@ namespace SuperGlue.Cms.Localization
 
                 foreach (var item in items)
                 {
-                    var key = BuildKey(@group.Key, item.Item1);
+                    var key = BuildKey(group.Key, item.Item1);
 
                     Translations[key] = item.Item2;
                 }
@@ -122,20 +122,20 @@ namespace SuperGlue.Cms.Localization
             return key;
         }
 
-        protected virtual void WriteMissing(IEnumerable<string> keys, CultureInfo culture)
+        protected virtual async Task WriteMissing(IEnumerable<string> keys, CultureInfo culture)
         {
             foreach (var key in keys)
-                WriteMissing(key, culture);
+                await WriteMissing(key, culture).ConfigureAwait(false);
         }
 
-        protected virtual void WriteMissing(string key, CultureInfo culture)
+        protected virtual async Task WriteMissing(string key, CultureInfo culture)
         {
             var missingFileLocation = GetMissingLocaleFileLocation();
 
+            var missingDocument = await GetMissingKeysDocument(missingFileLocation).ConfigureAwait(false);
+
             lock (MissingLocker)
             {
-                var missingDocument = GetMissingKeysDocument(missingFileLocation);
-
                 if (missingDocument.Root?.XPathSelectElement($"missing[@key='{key}']") != null)
                     return;
 
@@ -154,9 +154,12 @@ namespace SuperGlue.Cms.Localization
             return new CultureInfo(Path.GetFileName(filename).Split('.').First());
         }
 
-        private static XDocument GetMissingKeysDocument(string fileLocation)
+        private async Task<XDocument> GetMissingKeysDocument(string fileLocation)
         {
-            return XDocument.Load(fileLocation);
+            if(!_fileSystem.FileExists(fileLocation))
+                await _fileSystem.WriteStringToFile(fileLocation, "<missing-localization></missing-localization>").ConfigureAwait(false);
+
+            return XDocument.Load(await _fileSystem.ReadFile(fileLocation).ConfigureAwait(false));
         }
 
         private string GetMissingLocaleFileLocation()
