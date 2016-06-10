@@ -13,11 +13,12 @@ namespace SuperGlue.Cms.Localization
 {
     public class DefaultLocalizer : ILocalizeText
     {
-        private static readonly IDictionary<string, string> Translations = new ConcurrentDictionary<string, string>();
+        private static IDictionary<string, string> translations;
         public const string LeafElement = "string";
         private readonly IFileSystem _fileSystem;
         private readonly IEnumerable<ILocalizationVisitor> _visitors;
         private readonly IDictionary<string, object> _environment;
+        private static readonly object LoadLock = new object();
 
         public DefaultLocalizer(IEnumerable<ILocalizationVisitor> visitors, IFileSystem fileSystem, IDictionary<string, object> environment)
         {
@@ -29,6 +30,8 @@ namespace SuperGlue.Cms.Localization
         public virtual Task<string> Localize(string key, CultureInfo culture)
         {
             var translationKey = key;
+            var writeMissing = true;
+            var missingKeys = new List<string>();
 
             while (true)
             {
@@ -37,27 +40,43 @@ namespace SuperGlue.Cms.Localization
                 if (translationResult.Item2)
                     return Task.FromResult(_visitors.Aggregate(translationResult.Item1, (current, visitor) => visitor.AfterLocalized(translationKey, current)));
 
+                if (writeMissing)
+                    missingKeys.Add(translationKey);
+
                 var keyParts = translationKey.Split(':');
 
-                var text = translationKey;
-
                 if (keyParts.Length <= 1)
-                    return Task.FromResult(text);
+                {
+                    WriteMissing(missingKeys, culture);
+
+                    return Task.FromResult(GetDefaultText(translationKey, culture));
+                }
 
                 var namespaceParts = keyParts.Take(keyParts.Length - 1).ToArray();
 
                 if (namespaceParts.Length <= 0)
-                    return Task.FromResult(text);
+                {
+                    WriteMissing(missingKeys, culture);
+
+                    return Task.FromResult(GetDefaultText(translationKey, culture));
+                }
 
                 var namespacePartsToUse = namespaceParts.Take(namespaceParts.Length - 1).ToArray();
                 translationKey = keyParts.Last();
 
                 if (namespacePartsToUse.Any())
                     translationKey = $"{string.Join(":", namespacePartsToUse)}:{translationKey}";
+
+                writeMissing = false;
             }
         }
 
-        public virtual Task Load()
+        protected virtual void WriteMissing(IEnumerable<string> keys, CultureInfo culture)
+        {
+            
+        }
+
+        protected virtual void Load()
         {
             var fileSet = new FileSet
             {
@@ -67,33 +86,39 @@ namespace SuperGlue.Cms.Localization
 
             var directories = GetDirectoriesToSearch();
 
-            var groups = directories.SelectMany(dir => _fileSystem.FindFiles(dir, fileSet)).Where(file =>
+            lock (LoadLock)
             {
-                var fileName = Path.GetFileName(file);
-                return fileName != null;
-            }).GroupBy(CultureFor);
+                translations = new ConcurrentDictionary<string, string>();
 
-            foreach(var group in groups)
-            {
-                var items = group.SelectMany(LoadFrom);
-
-                foreach (var item in items)
+                var groups = directories.SelectMany(dir => _fileSystem.FindFiles(dir, fileSet)).Where(file =>
                 {
-                    var key = BuildKey(group.Key, item.Item1);
+                    var fileName = Path.GetFileName(file);
+                    return fileName != null;
+                }).GroupBy(CultureFor);
 
-                    Translations[key] = item.Item2;
+                foreach (var group in groups)
+                {
+                    var items = group.SelectMany(LoadFrom);
+
+                    foreach (var item in items)
+                    {
+                        var key = BuildKey(group.Key, item.Item1);
+
+                        translations[key] = item.Item2;
+                    }
                 }
             }
-
-            return Task.CompletedTask;
         }
 
         protected virtual Tuple<string, bool> GetTranslation(string key, CultureInfo culture)
         {
+            if(translations == null)
+                Load();
+
             var translationKey = BuildKey(culture, key);
 
-            if (Translations.ContainsKey(translationKey))
-                return new Tuple<string, bool>(Translations[translationKey], true);
+            if (translations?.ContainsKey(translationKey) ?? false)
+                return new Tuple<string, bool>(translations[translationKey], true);
 
             return new Tuple<string, bool>("", false);
         }
