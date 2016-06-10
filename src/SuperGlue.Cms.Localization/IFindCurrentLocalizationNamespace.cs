@@ -1,7 +1,9 @@
-﻿namespace SuperGlue.Cms.Localization
+﻿using System.Collections.Generic;
+
+namespace SuperGlue.Cms.Localization
 {
     public interface IFindCurrentLocalizationNamespace
     {
-        string Find();
+        string Find(IDictionary<string, object> environment);
     }
 }

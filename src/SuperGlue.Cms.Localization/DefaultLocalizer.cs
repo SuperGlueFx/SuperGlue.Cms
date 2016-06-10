@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using System.Xml.XPath;
 using SuperGlue.Configuration;
 using SuperGlue.FileSystem;
 
@@ -15,8 +14,6 @@ namespace SuperGlue.Cms.Localization
     public class DefaultLocalizer : ILocalizeText
     {
         private static readonly IDictionary<string, string> Translations = new ConcurrentDictionary<string, string>();
-        private static readonly object MissingLocker = new object();
-        public const string MissingLocaleConfigFile = "missing.locale.config";
         public const string LeafElement = "string";
         private readonly IFileSystem _fileSystem;
         private readonly IEnumerable<ILocalizationVisitor> _visitors;
@@ -29,49 +26,34 @@ namespace SuperGlue.Cms.Localization
             _environment = environment;
         }
 
-        public virtual async Task<string> Localize(string key, CultureInfo culture)
+        public virtual Task<string> Localize(string key, CultureInfo culture)
         {
             var translationKey = key;
-            var writeMissing = true;
-            var missingKeys = new List<string>();
 
             while (true)
             {
                 var translationResult = GetTranslation(translationKey, culture);
 
                 if (translationResult.Item2)
-                    return _visitors.Aggregate(translationResult.Item1, (current, visitor) => visitor.AfterLocalized(translationKey, current));
-
-                if (writeMissing)
-                    missingKeys.Add(translationKey);
+                    return Task.FromResult(_visitors.Aggregate(translationResult.Item1, (current, visitor) => visitor.AfterLocalized(translationKey, current)));
 
                 var keyParts = translationKey.Split(':');
 
                 var text = translationKey;
 
                 if (keyParts.Length <= 1)
-                {
-                    await WriteMissing(missingKeys, culture).ConfigureAwait(false);
-
-                    return text;
-                }
+                    return Task.FromResult(text);
 
                 var namespaceParts = keyParts.Take(keyParts.Length - 1).ToArray();
 
                 if (namespaceParts.Length <= 0)
-                {
-                    await WriteMissing(missingKeys, culture).ConfigureAwait(false);
-
-                    return text;
-                }
+                    return Task.FromResult(text);
 
                 var namespacePartsToUse = namespaceParts.Take(namespaceParts.Length - 1).ToArray();
                 translationKey = keyParts.Last();
 
                 if (namespacePartsToUse.Any())
                     translationKey = $"{string.Join(":", namespacePartsToUse)}:{translationKey}";
-
-                writeMissing = false;
             }
         }
 
@@ -80,8 +62,7 @@ namespace SuperGlue.Cms.Localization
             var fileSet = new FileSet
             {
                 DeepSearch = false,
-                Include = "*.locale.config",
-                Exclude = MissingLocaleConfigFile
+                Include = "*.locale.config"
             };
 
             var directories = GetDirectoriesToSearch();
@@ -89,7 +70,7 @@ namespace SuperGlue.Cms.Localization
             var groups = directories.SelectMany(dir => _fileSystem.FindFiles(dir, fileSet)).Where(file =>
             {
                 var fileName = Path.GetFileName(file);
-                return fileName != null && !fileName.StartsWith("missing.");
+                return fileName != null;
             }).GroupBy(CultureFor);
 
             foreach(var group in groups)
@@ -122,54 +103,14 @@ namespace SuperGlue.Cms.Localization
             return key;
         }
 
-        protected virtual async Task WriteMissing(IEnumerable<string> keys, CultureInfo culture)
-        {
-            foreach (var key in keys)
-                await WriteMissing(key, culture).ConfigureAwait(false);
-        }
-
-        protected virtual async Task WriteMissing(string key, CultureInfo culture)
-        {
-            var missingFileLocation = GetMissingLocaleFileLocation();
-
-            var missingDocument = await GetMissingKeysDocument(missingFileLocation).ConfigureAwait(false);
-
-            lock (MissingLocker)
-            {
-                if (missingDocument.Root?.XPathSelectElement($"missing[@key='{key}']") != null)
-                    return;
-
-                missingDocument.Root.Add(new XElement("missing", new XAttribute("key", key), new XAttribute("culture", culture.Name)));
-                missingDocument.Save(missingFileLocation);
-            }
-        }
-
         protected virtual IEnumerable<string> GetDirectoriesToSearch()
         {
             yield return _environment.ResolvePath("~/");
         }
 
-        private static CultureInfo CultureFor(string filename)
+        private CultureInfo CultureFor(string filename)
         {
-            return new CultureInfo(Path.GetFileName(filename).Split('.').First());
-        }
-
-        private async Task<XDocument> GetMissingKeysDocument(string fileLocation)
-        {
-            if(!_fileSystem.FileExists(fileLocation))
-                await _fileSystem.WriteStringToFile(fileLocation, "<missing-localization></missing-localization>").ConfigureAwait(false);
-
-            return XDocument.Load(await _fileSystem.ReadFile(fileLocation).ConfigureAwait(false));
-        }
-
-        private string GetMissingLocaleFileLocation()
-        {
-            var directory = GetDirectoriesToSearch().FirstOrDefault();
-
-            if (string.IsNullOrEmpty(directory))
-                return null;
-
-            return directory.AppendPath(MissingLocaleConfigFile);
+            return new CultureInfo(_fileSystem.GetFileName(filename).Split('.').First());
         }
 
         private static IEnumerable<Tuple<string, string>> LoadFrom(string file)
