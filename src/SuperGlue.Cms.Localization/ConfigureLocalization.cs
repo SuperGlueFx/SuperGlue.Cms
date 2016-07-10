@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Cms.Localization
 {
@@ -11,10 +12,9 @@ namespace SuperGlue.Cms.Localization
         {
             yield return new ConfigurationSetupResult("superglue.Cms.LocalizationSetup", environment =>
             {
-                environment.RegisterAll(typeof(ILocalizationVisitor));
-                environment.RegisterTransient(typeof(IFindCurrentLocalizationNamespace), typeof(DefaultLocalizationNamespaceFinder));
-                environment.RegisterTransient(typeof(ILocalizeText), typeof(DefaultLocalizer));
-                environment.RegisterTransient(typeof(CultureInfo), (x, y) => y.GetSettings<LocalizationSettings>().GetCulture(y));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IFindCurrentLocalizationNamespace), typeof(DefaultLocalizationNamespaceFinder))
+                    .Register(typeof(ILocalizeText), typeof(DefaultLocalizer))
+                    .Register(typeof(CultureInfo), (y, z) => environment.GetSettings<LocalizationSettings>().GetCulture(environment)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

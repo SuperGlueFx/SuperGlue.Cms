@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Cms.Templates
 {
@@ -10,7 +11,8 @@ namespace SuperGlue.Cms.Templates
         {
             yield return new ConfigurationSetupResult("superglue.Cms.TemplatesSetup", environment =>
             {
-                environment.RegisterTransient(typeof(ITemplateStorage), typeof(FileSystemTemplateStorage));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(ITemplateStorage), typeof(FileSystemTemplateStorage)));
+
                 environment.AlterSettings<FileSystemTemplatesSettings>(x => x.TemplateFolder = "~/templates");
 
                 return Task.CompletedTask;
