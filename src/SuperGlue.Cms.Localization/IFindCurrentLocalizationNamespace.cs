@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Cms.Localization
 {
     public interface IFindCurrentLocalizationNamespace
     {
-        string Find(IDictionary<string, object> environment);
+        Task<string> Find(IDictionary<string, object> environment);
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Cms.Localization
 {
@@ -9,7 +10,7 @@ namespace SuperGlue.Cms.Localization
             "owin.RequestPath"
         };
 
-        public string Find(IDictionary<string, object> environment)
+        public Task<string> Find(IDictionary<string, object> environment)
         {
             foreach (var key in _pathEnvironmentKeys)
             {
@@ -18,10 +19,10 @@ namespace SuperGlue.Cms.Localization
                 if(string.IsNullOrEmpty(value))
                     continue;
 
-                return value.Replace("/", ":").Replace(".", "");
+                return Task.FromResult(value.Replace("/", ":").Replace(".", ""));
             }
 
-            return "";
+            return Task.FromResult("");
         }
     }
 }

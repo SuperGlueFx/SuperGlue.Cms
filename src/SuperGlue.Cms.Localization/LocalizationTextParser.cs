@@ -29,7 +29,7 @@ namespace SuperGlue.Cms.Localization
 
         protected override async Task<CompiledText> CompileInner(Match match, IDictionary<string, object> environment, Func<string, Task<string>> recurse)
         {
-            var localizationNamespace = _findCurrentLocalizationNamespace.Find(environment);
+            var localizationNamespace = await _findCurrentLocalizationNamespace.Find(environment).ConfigureAwait(false);
 
             var key = !string.IsNullOrEmpty(localizationNamespace) ?
                 $"{localizationNamespace}:{match.Groups["resource"].Value}"
