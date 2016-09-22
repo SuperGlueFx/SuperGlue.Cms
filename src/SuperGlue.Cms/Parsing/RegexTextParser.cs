@@ -9,7 +9,7 @@ namespace SuperGlue.Cms.Parsing
 {
     public abstract class RegexTextParser : ITextParser
     {
-        public virtual void SetUp(ISetupTextParser setup)
+        public virtual void SetUp()
         {
             
         }

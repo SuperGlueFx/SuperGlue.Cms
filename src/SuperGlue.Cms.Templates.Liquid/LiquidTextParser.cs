@@ -15,7 +15,7 @@ namespace SuperGlue.Cms.Templates.Liquid
     {
         private static readonly Cache<string, Template> ParsedTemplates = new Cache<string, Template>();
 
-        public void SetUp(ISetupTextParser setup)
+        public void SetUp()
         {
             
         }

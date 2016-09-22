@@ -2,12 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using SuperGlue.Caching;
 using SuperGlue.Cms.Parsing;
-using SuperGlue.Configuration;
 
 namespace SuperGlue.Cms.Rendering
 {
@@ -15,35 +11,23 @@ namespace SuperGlue.Cms.Rendering
 	{
 		private readonly IEnumerable<ITextParser> _textParsers;
 		private readonly IEnumerable<IExecuteDataSource> _executeDataSources;
-		private readonly ICache _cache;
 
-		public DefaultCmsRenderer(IEnumerable<ITextParser> textParsers, IEnumerable<IExecuteDataSource> executeDataSources,
-			ICache cache)
+		public DefaultCmsRenderer(IEnumerable<ITextParser> textParsers, IEnumerable<IExecuteDataSource> executeDataSources)
 		{
 			_textParsers = textParsers;
 			_executeDataSources = executeDataSources;
-			_cache = cache;
 		}
 
 		public async Task<CompiledText> Compile(string text, IDictionary<string, object> environment)
 		{
-		    var setupTextParser = new SetupTextParser(environment);
-
             var parsers = _textParsers.ToList();
 
 		    foreach (var parser in parsers)
 		    {
 		        environment.Log($"Setting up using parser {parser.GetType().FullName}", LogLevel.Debug);
 
-                parser.SetUp(setupTextParser);
+                parser.SetUp();
 		    }
-
-		    var key = setupTextParser.GetCacheKey(text);
-
-			var compiledText = await _cache.Get<CompiledText>(key).ConfigureAwait(false);
-
-			if (compiledText != null)
-				return compiledText;
 
 			var currentText = new CompiledText(text, new ReadOnlyDictionary<string, CompiledText.DataSource>(new Dictionary<string, CompiledText.DataSource>()));
 
@@ -75,8 +59,6 @@ namespace SuperGlue.Cms.Rendering
 					environment.Log(ex, $"Failed compiling text with parser: {parser.GetType().FullName}", LogLevel.Warn);
 				}
 			}
-
-			await _cache.Set(key, currentText, environment.GetSettings<RenderingSettings>().CompiliationCacheTimeout).ConfigureAwait(false);
 
 			return currentText;
 		}
@@ -127,42 +109,5 @@ namespace SuperGlue.Cms.Rendering
 
 			return currentText;
 		}
-
-	    private class SetupTextParser : ISetupTextParser
-	    {
-	        private readonly IDictionary<string, object> _environment;
-            private readonly StringBuilder _cacheKeyBuilder = new StringBuilder();
-
-	        public SetupTextParser(IDictionary<string, object> environment)
-	        {
-	            _environment = environment;
-	        }
-
-	        public void DependsOn(Func<IDictionary<string, object>, object> func)
-	        {
-	            _cacheKeyBuilder.Append(func(_environment));
-	        }
-
-	        public string GetCacheKey(string input)
-	        {
-	            return CalculateHash($"{input}-{_cacheKeyBuilder}");
-	        }
-
-            private static string CalculateHash(string input)
-            {
-                var md5 = MD5.Create();
-
-                var inputBytes = Encoding.ASCII.GetBytes(input);
-
-                var hash = md5.ComputeHash(inputBytes);
-
-                var sb = new StringBuilder();
-
-                foreach (var t in hash)
-                    sb.Append(t.ToString("X2"));
-
-                return sb.ToString();
-            }
-        }
 	}
 }

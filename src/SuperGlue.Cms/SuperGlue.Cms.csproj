@@ -53,12 +53,10 @@
     <Compile Include="Files\FileSystemFileUploader.cs" />
     <Compile Include="Parsing\DataSourceTextParser.cs" />
     <Compile Include="Parsing\ConfigureParsing.cs" />
-    <Compile Include="Parsing\ISetupTextParser.cs" />
     <Compile Include="Parsing\RegExExtensions.cs" />
     <Compile Include="Rendering\CompiledText.cs" />
     <Compile Include="Rendering\ConfigureRendering.cs" />
     <Compile Include="Rendering\IExecuteDataSource.cs" />
-    <Compile Include="Rendering\RenderingSettings.cs" />
     <Compile Include="Templates\ConfigureTemplates.cs" />
     <Compile Include="Templates\FileSystemTemplatesSettings.cs" />
     <Compile Include="Templates\FileSystemTemplateStorage.cs" />
@@ -151,13 +149,6 @@
       </ItemGroup>
     </When>
   </Choose>
-  <ItemGroup>
-    <Reference Include="SuperGlue.Caching">
-      <HintPath>..\..\packages\SuperGlue.Caching\lib\SuperGlue.Caching.dll</HintPath>
-      <Private>True</Private>
-      <Paket>True</Paket>
-    </Reference>
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="SuperGlue.Configuration">
       <HintPath>..\..\packages\SuperGlue.Configuration\lib\SuperGlue.Configuration.dll</HintPath>
