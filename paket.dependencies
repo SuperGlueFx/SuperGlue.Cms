@@ -3,8 +3,6 @@ source https://www.myget.org/F/jajo/api/v2
 nuget DotLiquid
 nuget Fixie
 nuget MarkdownSharp
-nuget NewtonSoft.Json
 nuget Should
-nuget SuperGlue.Configuration
 nuget SuperGlue.FileSystem
 nuget SuperGlue.Web.Output
