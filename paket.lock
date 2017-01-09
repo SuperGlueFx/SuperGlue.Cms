@@ -1,6 +1,6 @@
 NUGET
   remote: https://www.nuget.org/api/v2
-    DotLiquid (2.0.55)
+    DotLiquid (2.0.64)
     Fixie (1.0.2)
     MarkdownSharp (1.13)
     Microsoft.CSharp (4.3) - framework: >= netstandard10
@@ -241,10 +241,10 @@ NUGET
       System.Threading (>= 4.3) - framework: dnxcore50, >= netstandard13
       System.Xml.ReaderWriter (>= 4.3) - framework: dnxcore50, netstandard10, >= netstandard13
   remote: https://www.myget.org/F/jajo/api/v2
-    SuperGlue.Configuration (1.0.0.381)
+    SuperGlue.Configuration (1.0.0.382)
       Newtonsoft.Json
-    SuperGlue.FileSystem (1.0.0.381)
+    SuperGlue.FileSystem (1.0.0.382)
       SuperGlue.Configuration
-    SuperGlue.Web.Output (1.0.0.381)
+    SuperGlue.Web.Output (1.0.0.382)
       Newtonsoft.Json
       SuperGlue.Configuration
